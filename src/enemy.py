@@ -10,5 +10,5 @@ class Enemy(HitpointBar):
 
     def draw(self, screen):
         super().draw(screen, self.rect.x, self.rect.top - 100)
-        screen.blit(self.image, self.rect)
+        screen.blit(self.image, screen)
 
