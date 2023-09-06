@@ -71,35 +71,36 @@ class Ship:
             if random.random() < self.change_direction_probability:
                 self.movingDown = not self.movingDown
 
-        # Update the laser animation
-          # Update the laser animation if shooting
-        if self.is_shooting:
-            # Control the animation speed with a frame counter
-            self.frame_counter += 1
+        # # Update the laser animation
+        #   # Update the laser animation if shooting
+        # if self.is_shooting:
+        #     # Control the animation speed with a frame counter
+        #     self.frame_counter += 1
 
-            # Update the animation every, for example, 5 frames (adjust this value)
-            if self.frame_counter % 5 == 0:
-                # Position the laser image at the ship's top
-                self.laser_rect.centerx = self.rect.centerx
-                self.laser_rect.x = self.rect.right 
-                self.laser_rect.y -= 10  # Adjust this value for the laser's vertical speed
+        #     # Update the animation every, for example, 5 frames (adjust this value)
+        #     if self.frame_counter % 5 == 0:
+        #         # Position the laser image at the ship's top
+        #         self.laser_rect.centerx = self.rect.centerx
+        #         self.laser_rect.x = self.rect.right 
+        #         self.laser_rect.y -= 10  # Adjust this value for the laser's vertical speed
 
-                # Advance to the next laser image
-                self.laser_animation_index += 1
-                if self.laser_animation_index >= len(self.laser_images):
-                    self.is_shooting = False  # End the animation when all frames are displayed
+        #         # Advance to the next laser image
+        #         self.laser_animation_index += 1
+        #         if self.laser_animation_index >= len(self.laser_images):
+        #             self.is_shooting = False  # End the animation when all frames are displayed
 
-                # Reset the frame counter
-                self.frame_counter = 0
+        #         # Reset the frame counter
+        #         self.frame_counter = 0
 
 
 
     def start_laser_animation(self):
-        # Start the laser animation
-        self.is_shooting = True
-        self.laser_animation_index = 0
-        self.laser_rect = self.rect.copy()
-        self.laser_rect.x += 300 
+        pass
+        # # Start the laser animation
+        # self.is_shooting = True
+        # self.laser_animation_index = 0
+        # self.laser_rect = self.rect.copy()
+        # self.laser_rect.x += 300 
         
 
     def draw(self, surface):

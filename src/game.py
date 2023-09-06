@@ -1,5 +1,5 @@
 import pygame
-from src.player import Player
+from src.player.player import Player
 from src.enemy import Enemy
 from src.backgroundStuff import BackgroundStuff as Background
 from src.widgets.button import Button
@@ -10,6 +10,8 @@ class Game:
     VS_CENTER = (600, 400)
     VS_IMG_URL = "assets/VS.png"
     SHIP_IMG_URLS = ("assets/spaceShip.png", "assets/spaceShip2.png","assets/spaceShip3.png")
+    CARD_IMG_URLS = ("assets/cardShipNebula.png")
+
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((1200, 800))
@@ -32,6 +34,7 @@ class Game:
 
     def handle_events(self):
         self.orderButton.check_hover((self.mouse_x, self.mouse_y))
+        self.player.handle_event(pygame.event.get())
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
