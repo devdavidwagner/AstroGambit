@@ -1,0 +1,3 @@
+ShipNebula|SHIP
+AttackLaser|ATTACK
+AttackLaser|ATTACK

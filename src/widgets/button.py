@@ -6,6 +6,7 @@ class Button:
         self.text = text
         self.highlighted = False
         self.color = color
+        self.clicked = False
 
     def draw(self, surface):
         if self.highlighted:
@@ -23,3 +24,12 @@ class Button:
 
     def check_click(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
+    
+    def handle_event(self, mouse_pos, events):
+        mouse_pos = pygame.mouse.get_pos()
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.check_click(mouse_pos):
+                    self.clicked = True                   
+            elif event.type == pygame.MOUSEMOTION:               
+                self.check_hover(mouse_pos)
