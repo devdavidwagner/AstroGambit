@@ -1,3 +1,8 @@
 ShipNebula|SHIP
-AttackLaser|ATTACK
-AttackLaser|ATTACK
+AttackBomb|ATTACK-BOMB
+AttackLaser|ATTACK-LASER
+AttackLaser|ATTACK-LASER
+ShieldBoost|SHIELD-BOOST
+AttackBomb|ATTACK-BOMB
+AttackBomb|ATTACK-BOMB
+ShipNebula|SHIP

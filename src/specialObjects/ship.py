@@ -1,6 +1,7 @@
 import pygame
 import random
 from src.player.cardType import CardType
+from src.hitpointBar import HitpointBar
 
 class Ship:
     PADDING = 200
@@ -29,8 +30,8 @@ class Ship:
         self.rect.center = (x, y)
         self.origX = self.rect.x
         self.origY = self.rect.y
-        self.left_boundary = self.FLEET_ZONE_COODS[0] - 50
-        self.right_boundary = self.FLEET_ZONE_COODS[0] + 200
+        self.left_boundary = self.FLEET_ZONE_COODS[0] - 200
+        self.right_boundary = self.FLEET_ZONE_COODS[0] + 100
         self.top_boundary = self.FLEET_ZONE_COODS[1] - 100
         self.bottom_boundary = self.FLEET_ZONE_COODS[1] 
         self.animation_speed = 6  
@@ -51,14 +52,45 @@ class Ship:
         self.laser_animation_index = 0  # Index to track the current laser image
         self.is_shooting = False  # Flag to indicate if the ship is shooting
 
+        self.shieldBoost_images = [pygame.image.load(f"assets/shieldBoost{i}.png") for i in range(1, 4)]  # Load laser images 1, 2, and 3
+        self.shieldBoost_rect = self.rect  # Rectangle to position the laser image
+        self.shieldBoost_animation_index = 0  # Index to track the current laser image
+        self.is_shieldBoosting = False  # Flag to indicate if the ship is shooting
+        self.shieldBoost_rect.center = self.rect.center
+    
+        
+
+        self.bomb_images = [pygame.image.load(f"assets/bomb{i}.png") for i in range(1, 6)]  # Load laser images 1, 2, and 3
+        self.bomb_rect = self.bomb_images[0].get_rect()  # Rectangle to position the laser image
+        self.bomb_rect2 = self.bomb_images[0].get_rect() 
+        self.bomb_rect3 = self.bomb_images[0].get_rect() 
+        self.bomb_rect4 = self.bomb_images[0].get_rect() 
+        self.bomb_rect5 = self.bomb_images[0].get_rect() 
+        self.bomb_positions = [(self.rect.x, 0), (self.rect.x + 50, -30), (self.rect.x + 100, -60), (self.rect.x + 150, -90), (self.rect.x + 200, -120)]
+        self.bomb_speed = 3
+        self.bomb_animation_index = 0  # Index to track the current laser image
+        self.is_bombing = False
+
+        self.bombPosYs = [self.rect.y, self.rect.y-20, self.rect.y-40, self.rect.y-60, self.rect.y-80]
+
         self.font = pygame.font.Font(None, 36)
-        self.text_surface = self.font.render(self.name, True, self.BLACK)
+        self.text_surface = self.font.render(self.name, True, self.WHITE)
         self.text_rect = self.text_surface.get_rect()
-        self.text_rect.midtop = (self.rect.x + self.rect.width // 2, self.rect.y + self.rect.height)
+        self.shipCount = 1
+        self.text_rect.midtop = (self.rect.x + self.rect.width / 2 + (self.shipCount * 20), self.rect.y + self.rect.height)
 
         self.frame_counter = 0
+        self.bomb_frame_counter = 0
+        self.shieldBoost_frame_counter = 0
+
+
         self.arrival = arrival
         self.arrivalDraw = False
+
+        self.hitpoints = 100
+        self.hitpointBar = HitpointBar(self.hitpoints,100, 20, "GREEN")
+
+        
 
         if arrival:
             self.rect.x = -10
@@ -74,6 +106,9 @@ class Ship:
     
 
     def update(self):
+        # Inside your update method:
+        self.text_rect.midtop = (self.rect.x + self.rect.width // 2, self.rect.y + self.rect.height)
+
         self.animation_counter += 1
         if self.animation_counter >= self.animation_speed:
             self.image_index = (self.image_index + 1) % len(self.images)
@@ -89,8 +124,6 @@ class Ship:
                 self.rect.x += 4
                 self.rect.y += 1          
         else:                       
-
-
             if self.movingRight:
                 self.rect.x += 1
             else:
@@ -114,7 +147,6 @@ class Ship:
                 self.movingDown = False
             elif self.rect.y <= self.top_boundary:
                 self.movingDown = True
-
 
             if random.random() < self.change_direction_probability:
                 horizontal_change = random.choice([True, False])  # Randomly set the horizontal direction
@@ -148,6 +180,42 @@ class Ship:
                 # Reset the frame counter
                 self.frame_counter = 0
 
+        if self.is_bombing:
+            # Control the animation speed with a frame counter
+            self.bomb_frame_counter += 1
+
+            # Update the animation every, for example, 5 frames (adjust this value)
+            if self.bomb_frame_counter % 10 == 0:
+                # Position the laser image at the ship's top
+                self.bomb_rect.centerx = self.rect.centerx
+                self.bomb_rect.x = self.rect.right 
+                self.bomb_rect.y -= 10  # Adjust this value for the laser's vertical speed
+
+                # Advance to the next laser image
+                self.bomb_animation_index += 1
+                if self.bomb_animation_index >= len(self.bomb_images):
+                    self.is_bombing = False  # End the animation when all frames are displayed
+                    self.bombPosY = 10
+
+                # Reset the frame counter
+                self.bomb_frame_counter = 0
+
+        if self.is_shieldBoosting:
+            # Control the animation speed with a frame counter
+            self.shieldBoost_frame_counter += 1
+
+            # Update the animation every, for example, 5 frames (adjust this value)
+            if self.shieldBoost_frame_counter % 5 == 0:
+                self.shieldBoost_rect.centerx = self.rect.centerx
+
+                self.shieldBoost_animation_index += 1
+                if self.shieldBoost_animation_index >= len(self.shieldBoost_images):
+                    self.is_shieldBoosting = False  # End the animation when all frames are displayed
+
+
+                # Reset the frame counter
+                self.shieldBoost_frame_counter = 0
+
 
 
     def start_laser_animation(self):
@@ -156,13 +224,22 @@ class Ship:
         self.laser_animation_index = 0
         self.laser_rect = self.rect.copy()
         self.laser_rect.x += 300 
+
+    def start_bombing_animation(self):
+        # Start the laser animation
+        self.is_bombing = True
+        self.bomb_animation_index = 0
+
+    def start_shieldBoosting_animation(self):
+        # Start the laser animation
+        self.is_shieldBoosting = True
+        self.shieldBoost_animation_index = 0
         
     arrivalDrawTime = 1
     imageInd = 0
-
+    
     def draw(self, surface):
         surface.blit(self.image, self.rect)
-
         if self.arrivalDraw:
             if self.arrivalDrawTime == 10:
                 self.imageInd  += 1
@@ -180,3 +257,20 @@ class Ship:
         #Draw the laser image if shooting
         if self.is_shooting and self.laser_rect:
             surface.blit(self.laser_images[self.laser_animation_index], self.laser_rect)
+        if self.is_shieldBoosting and self.shieldBoost_rect:
+            surface.blit(self.shieldBoost_images[self.shieldBoost_animation_index], self.shieldBoost_rect)
+
+        if self.is_bombing:        
+            for i, position in enumerate(self.bomb_positions):
+                # Update the y-coordinate by adding 10 to it
+                self.bombPosYs[i] = self.bombPosYs[i] + self.bomb_speed
+                new_position = (position[0], self.bombPosYs[i])
+                bomb_rect = pygame.Rect(new_position, (40, 80))
+                surface.blit(self.bomb_images[self.bomb_animation_index], bomb_rect)
+        else:
+            self.bombPosYs = [self.rect.y, self.rect.y-20, self.rect.y-40, self.rect.y-60, self.rect.y-80]
+
+        #text
+        self.hitpointBar.draw(surface, self.text_rect.x, self.text_rect.y + 25)
+        surface.blit(self.text_surface, self.text_rect)
+        

@@ -22,10 +22,21 @@ class Fleet():
         return [ship.info() for ship in self.ships]
     
     def order(self, orderType):
-        if orderType == "ATTACK":
+        if orderType == "ATTACK_LASER":
             for ship in self.ships:
                 ship.start_laser_animation()
             self.flagShip.start_laser_animation()
+
+        if orderType == "ATTACK_BOMB":
+            for ship in self.ships:
+                ship.start_bombing_animation()
+            self.flagShip.start_bombing_animation()
+
+        if orderType == "SHIELD_BOOST":
+            for ship in self.ships:
+                ship.start_shieldBoosting_animation()
+            self.flagShip.start_shieldBoosting_animation()
+            
     
     def update(self):        
         self.flagShip.update()

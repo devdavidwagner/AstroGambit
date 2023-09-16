@@ -1,11 +1,16 @@
-from enum import Enum
+from enum import Enum, auto
+
 
 class CardType(Enum):
-    SHIP = "SHIP"
-    ATTACK = "ATTACK"
-    SHIELD = "SHIELD REGEN"
-    REPAIR = "REPAIR"
+    SHIP = auto()
+    ATTACK_LASER = auto()
+    ATTACK_BOMB = auto()
+    SHIELD = auto()
+    REPAIR = auto()
+    SHIELD_BOOST = auto()
 
-# Example usage:
-card_type = CardType.SHIP
-print(card_type)  # Output: CardType.SHIP
+    # Define AttackType as part of CardType
+    class AttackType(Enum):
+        LASER = auto()
+        BOMB = auto()
+
